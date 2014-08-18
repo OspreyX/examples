@@ -114,13 +114,16 @@
 					}
 					
 					if(info.reason == "self") {
-						lastBounds_ = info;
 						isChanging_ = false;
 						
 						if(shouldDock_ && !me.isDocked()) {
-							me.group();
 							shouldDock_ = false;
+							wnd_.moveTo(lastBounds_.left, lastBounds_.top, function() {
+								me.group();
+							});
 						}
+						
+						lastBounds_ = info;
 					}
 				}
 			}
@@ -143,11 +146,11 @@
                 }
 				
 				//if not docked
-				otherWnd_.getBounds(function(bounds){
-					var otherWindowHeight = bounds.height;
-					var otherWindowWidth = bounds.width;
-					var otherWindowLeft = bounds.left;
-					var otherWindowTop = bounds.top;
+				otherWnd_.getBounds(function(otherBounds){
+					var otherWindowHeight = otherBounds.height;
+					var otherWindowWidth = otherBounds.width;
+					var otherWindowLeft = otherBounds.left;
+					var otherWindowTop = otherBounds.top;
 
 					var thresh = 10;
 
