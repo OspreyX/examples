@@ -18,13 +18,13 @@ namespace example_WPF_ExternalWindowObserver_snap
             string host = "localhost";
             int port = 9696;
 
-            // Get default installed location for runtime 2.0.3.17
+            // Get default installed location for runtime 2.0.7.0
             string path = (Environment.OSVersion.Version.Major > 5? 
                 // Vista, Win7 or Win8
-                Environment.ExpandEnvironmentVariables("%LOCALAPPDATA%") + "\\OpenFin\\runtime\\2.0.3.17\\OpenFin\\openfin.exe"
+                Environment.ExpandEnvironmentVariables("%LOCALAPPDATA%") + "\\OpenFin\\runtime\\2.0.7.0\\OpenFin\\openfin.exe"
                     :
                 // XP
-                Environment.ExpandEnvironmentVariables("%APPDATA%") + "..\\Local Settings\\Application Data\\OpenFin\\runtime\\2.0.3.17\\OpenFin\\openfin.exe"
+                Environment.ExpandEnvironmentVariables("%APPDATA%") + "..\\Local Settings\\Application Data\\OpenFin\\runtime\\2.0.7.0\\OpenFin\\openfin.exe"
             );
 
             string args = "";

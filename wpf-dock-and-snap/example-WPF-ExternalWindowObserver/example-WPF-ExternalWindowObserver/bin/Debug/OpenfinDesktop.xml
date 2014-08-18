@@ -4,6 +4,30 @@
         <name>OpenfinDesktop</name>
     </assembly>
     <members>
+        <member name="T:Openfin.Desktop.CallbackSourcePair`1">
+            <summary>
+                Creates a pairing between CallbackType and an object on construction.
+            </summary>
+            <typeparam name="CallbackType">The object type to store on construction and retrieve with getCallback().</typeparam>
+        </member>
+        <member name="M:Openfin.Desktop.CallbackSourcePair`1.#ctor(`0,System.Object)">
+            <summary>
+                Constructs a pairing between the callback and source
+            </summary>
+            <param name="callback">Object to return via getCallback()</param>
+            <param name="source">Object to return via getSource()</param>
+        </member>
+        <member name="M:Openfin.Desktop.CallbackSourcePair`1.getSource">
+            <summary>
+                Accessor for the stored source.
+            </summary>
+        </member>
+        <member name="M:Openfin.Desktop.CallbackSourcePair`1.getCallback">
+            <summary>
+                Accessor for the stored callback.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:Openfin.Desktop.NamespaceDoc">
             <summary>
                 C# API binding for the OpenFin App Desktop.
@@ -323,9 +347,116 @@
                 Callback when a message is sent from this client.
             </summary>
         </member>
+        <member name="M:Openfin.Desktop.DesktopConnection.processExternalMessage(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+                Dispatches the a payload from "process-external-message" to all registered ExternalMessageHandlerDelegates
+                and sends the result after all result handlers have set a success/fail result.
+            </summary>
+            <param name="payload">The data to process.</param>
+        </member>
+        <member name="M:Openfin.Desktop.DesktopConnection.addExternalMessageHandler(Openfin.Desktop.ExternalMessageHandlerDelegate,System.Object)">
+            <summary>
+                Registers a listener to handle messages for this connection's UUID originating via HTTPS/HTTP.
+            </summary>
+            <param name="listener">
+                A function that is called to process a received HTTPS/HTTP message for this connection.
+            </param>
+            <param name="source">
+                The object that originally registered the listener.
+            </param>
+        </member>
         <member name="P:Openfin.Desktop.DesktopConnection.MessageTrace">
             <summary>
                 The MessageTrace property controls additional console logging.
+            </summary>
+        </member>
+        <member name="T:Openfin.Desktop.DesktopConnection.SendMessageToDesktopDelegate">
+            <summary>
+                Sends a message to AppDesktop.
+            </summary>
+            <param name="action">The action of the message.</param>
+            <param name="payload">The message object to send.</param>
+            <param name="callback">
+                A function that is called if the method succeeds.
+            </param>
+            <param name="errorCallback">
+                A function that is called if the method fails.
+                The reason for failure is passed as an argument.
+            </param>
+            <param name="source">
+                The message source to pair with resulting instances of AckCallback.
+            </param>
+        </member>
+        <member name="T:Openfin.Desktop.DesktopConnection.ExternalMessageResultHandlerFactory">
+            <summary>
+                Creates instances of ExternalMessageResultHandler and sends the total result to the AppDesktop.
+            </summary>
+        </member>
+        <member name="T:Openfin.Desktop.IExternalMessageResultDispatcher">
+            <summary>
+                Interface for handling the result status and message from ExternalMessageResultHandler.send()
+            </summary>
+        </member>
+        <member name="M:Openfin.Desktop.IExternalMessageResultDispatcher.handleResult(System.String,System.Boolean,System.String)">
+            <summary>
+                Invoked by ExternalMessageResultHandler.send()
+            </summary>
+            <param name="id">The UUID of the ExternalMessageResultHandler the result came from</param>
+            <param name="result">true for success, false for failure.</param>
+            <param name="message">A string response to be sent back over HTTP/HTTPS</param>
+        </member>
+        <member name="M:Openfin.Desktop.DesktopConnection.ExternalMessageResultHandlerFactory.#ctor(System.String,Openfin.Desktop.DesktopConnection.SendMessageToDesktopDelegate,Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            
+            </summary>
+            <param name="uuid">
+                The UUID of the DesktopConnection that owns this factory. Used for dispatching to the AppDesktop.
+            </param>
+            <param name="sendMessageToDesktop">
+                Delegate for sending the success/fail result payload to the AppDesktop.
+            </param>
+            <param name="request">
+                The payload from the AppDesktop.
+            </param>
+        </member>
+        <member name="M:Openfin.Desktop.DesktopConnection.ExternalMessageResultHandlerFactory.wasSent">
+            <summary>
+                Returns true when the result has been sent to the desktop
+            </summary>
+        </member>
+        <member name="M:Openfin.Desktop.DesktopConnection.ExternalMessageResultHandlerFactory.sendIfAllResultsDispatchedAndComplete">
+            <summary>
+                Sends the AND combination of all results and concatenated messages to the AppDesktop 
+                if allDispatched() has been called and all result handlers have completed.
+            </summary>
+        </member>
+        <member name="M:Openfin.Desktop.DesktopConnection.ExternalMessageResultHandlerFactory.allDispatched">
+            <summary>
+                Marks that no more result handlers will be created.
+                Sends result status to the AppDesktop immediately if all result handlers have already set their success/fail and messages.
+            </summary>
+        </member>
+        <member name="M:Openfin.Desktop.DesktopConnection.ExternalMessageResultHandlerFactory.makeResultHandler">
+            <summary>
+                Factory method to create and track a result handler
+            </summary>
+        </member>
+        <member name="M:Openfin.Desktop.DesktopConnection.ExternalMessageResultHandlerFactory.handleResult(System.String,System.Boolean,System.String)">
+            <summary>
+                Updates the stored meta information and sends to the container if all results have been received.
+            </summary>
+            <param name="id">The UUID of the ExternalMessageResultHandler the result came from</param>
+            <param name="result">true for success, false for failure.</param>
+            <param name="message">A string response to be sent back over HTTP/HTTPS</param>
+        </member>
+        <member name="T:Openfin.Desktop.DesktopConnection.ExternalMessageResultHandlerFactory.ResultHandlerMetaInfo">
+            <summary>
+                Stores meta information for each ExternalMessageResultHandler
+            </summary>
+        </member>
+        <member name="M:Openfin.Desktop.DesktopConnection.ExternalMessageResultHandlerFactory.ResultHandlerMetaInfo.#ctor">
+            <summary>
+                Defaults values used by this meta class
             </summary>
         </member>
         <member name="T:Openfin.Desktop.DesktopUtils">
@@ -341,6 +472,18 @@
                     "defaultValue" is returned if no match is found.
                 </para>
                 <param name="jsonObject">The JSON object to retrieve a value from.</param>
+                <param name="key">The key to search for.</param>
+                <param name="defaultValue">The value to return if no key match is found.</param>
+            </summary>
+        </member>
+        <member name="M:Openfin.Desktop.DesktopUtils.getJSONArray(Newtonsoft.Json.Linq.JObject,System.String,Newtonsoft.Json.Linq.JArray)">
+            <summary>
+                Returns a JArray identified by "key" from 
+                "jsonObject".
+                <para>
+                    "defaultValue" is returned if no match is found.
+                </para>
+                <param name="jsonObject">The JSON object to retrieve the JArray from.</param>
                 <param name="key">The key to search for.</param>
                 <param name="defaultValue">The value to return if no key match is found.</param>
             </summary>
@@ -603,6 +746,20 @@
                 The reason for failure is passed as an argument.
             </param>
         </member>
+        <member name="M:Openfin.Desktop.Application.getManifest(Openfin.Desktop.AckCallback,Openfin.Desktop.AckCallback)">
+            <summary>
+                Retrieves the JSON manifest that was used to create the application.
+                Invokes the error callback if the application was not created from a manifest.
+            </summary>
+            <param name="callback">
+                A function that is called and passed an Ack containing the JObject manifest 
+                that was used to create the application.
+            </param>
+            <param name="errorCallback">
+                (Optional) A function that is called if the method fails.
+                The reason for failure is passed as an argument.
+            </param>
+        </member>
         <member name="M:Openfin.Desktop.Application.getWindow">
             <returns>
                 The main Window object of the application.
@@ -728,6 +885,35 @@
                 The applications connection object with the AppDesktop.
                 <see cref="P:Openfin.Desktop.Application.DesktopConnection"/>
             </returns>
+        </member>
+        <member name="T:Openfin.Desktop.ExternalMessageHandlerDelegate">
+            <summary>
+                Delegate for consuming external messages targeted at an application originating from HTTP/HTTPS.
+            </summary>
+            <param name="resultHandler">Sends the result status to the container</param>
+            <param name="payload">The JSON sent via HTTP/HTTPS</param>
+        </member>
+        <member name="T:Openfin.Desktop.ExternalMessageResultHandler">
+            <summary>
+                Utility class to communicate results from calls to an ExternalMessageHandlerDelegate back to the AppDesktop.
+            </summary>
+        </member>
+        <member name="M:Openfin.Desktop.ExternalMessageResultHandler.Dispose">
+            <summary>
+                Will call send() if not done so already.
+            </summary>
+        </member>
+        <member name="M:Openfin.Desktop.ExternalMessageResultHandler.send(System.Boolean,System.String)">
+            <summary>
+                Record the result of an ExternalMessageHandlerDelegate to be sent back to the AppDesktop.
+            </summary>
+            <param name="result">true for success, false for failure.</param>
+            <param name="message">A string response to be sent back over HTTP/HTTPS</param>
+        </member>
+        <member name="P:Openfin.Desktop.ExternalMessageResultHandler.ID">
+            <summary>
+                A unique identifier for every instance of ExternalMessageResultHandler.
+            </summary>
         </member>
         <member name="T:Openfin.Desktop.InterAppMessageHandler">
             <summary>
@@ -957,6 +1143,22 @@
                 underlying JObject field, "cornerRounding.width".
             </value>
         </member>
+        <member name="P:Openfin.Desktop.WindowOptions.DefaultCentered">
+             <summary>
+                 The DefaultCentered property specifies that the window will be positioned in the 
+                 center of the primary monitor when loaded for the first time on a machine. 
+            
+                 <para>Default: false</para>
+             </summary> 
+             <remarks>
+                 When the window corresponding to that id is loaded again, the position 
+                 from before the window was closed is used.
+             </remarks>
+             <value>
+                 The DefaultCentered property gets/sets the value of the 
+                 underlying JObject field, "defaultCentered".
+             </value>
+        </member>
         <member name="P:Openfin.Desktop.WindowOptions.DefaultHeight">
             <summary>
                 The DefaultHeight property represents the window's 
@@ -1140,6 +1342,28 @@
             <value>
                 The Resizable property gets/sets the value of the 
                 underlying JObject field, "resizable".
+            </value>
+        </member>
+        <member name="P:Openfin.Desktop.WindowOptions.ResizeRegionBottomRightCorner">
+            <summary>
+                The ResizeRegionBottomRightCorner property defines an additional square 
+                region located at the bottom right corner of a frameless window.
+                <para>Default: 4</para>
+            </summary> 
+            <value>
+                The ResizeRegionBottomRightCorner property gets/sets the value of the 
+                underlying JObject field, "resizeRegion.bottomRightCorner".
+            </value>
+        </member>
+        <member name="P:Openfin.Desktop.WindowOptions.ResizeRegionSize">
+            <summary>
+                The ResizeRegionSize property defines a region 
+                in pixels that will respond to user mouse interaction for resizing a frameless window
+                <para>Default: 2</para>
+            </summary> 
+            <value>
+                The ResizeRegionSize property gets/sets the value of the 
+                underlying JObject field, "resizeRegion.size".
             </value>
         </member>
         <member name="P:Openfin.Desktop.WindowOptions.ShowTaskbarIcon">
@@ -1653,7 +1877,7 @@
                 A window that can be controlled by the AppDesktop API. 
                 <para>
                     Window objects are available through application.getWindow(). 
-                    This class is not directly instantiable. 
+                    This class can not be instantiated directly. 
                 </para>
             </summary>
         </member>
@@ -1705,10 +1929,18 @@
                     bounds-changed
                     bounds-changing
                     closed
+                    close-requested
+                    disabled-frame-bounds-changed
+                    disabled-frame-bounds-changing
                     focused
+                    frame-disabled
+                    frame-enabled
+                    group-changed
+                    hidden
                     maximized
                     minimized
                     restored
+                    shown
             </remarks>
             <param name="subscriptionObject">
                 A JSON object containing subscription information such as the topic and type.
@@ -1829,6 +2061,47 @@
                 The reason for failure is passed as an argument.
             </param>
         </member>
+        <member name="M:Openfin.Desktop.Window.disableFrame(Openfin.Desktop.AckCallback,Openfin.Desktop.AckCallback)">
+            <summary>
+                Prevents a user from changing a window's size/position when using the window's frame.
+                
+            <remarks>
+                'disabled-frame-bounds-changing' is generated at the start of and during a user move/size operation. 
+                'disabled-frame-bounds-changed' is generated after a user move/size operation.
+                The events provide the bounds that would have been applied if the frame was enabled.
+             
+                'frame-enabled' is generated when a disabled frame has becomes enabled.
+            </remarks>
+            </summary>
+            <param name="callback">
+                (Optional) A function that is called if the method succeeds.
+            </param>
+            <param name="errorCallback">
+                (Optional) A function that is called if the method fails.
+                The reason for failure is passed as an argument.
+            </param>
+        </member>
+        <member name="M:Openfin.Desktop.Window.enableFrame(Openfin.Desktop.AckCallback,Openfin.Desktop.AckCallback)">
+            <summary>
+                Re-enables user changes to a window's size/position when using the window's frame.
+                
+            <remarks>
+                'disabled-frame-bounds-changing' is generated at the start of and during a user move/size operation. 
+                'disabled-frame-bounds-changed' is generated after a user move/size operation.
+                 The events provide the bounds that would have been applied if the frame was enabled.
+                 
+                'frame-enabled' is generated when a disabled frame has becomes enabled.
+            </remarks>
+            
+            </summary>
+            <param name="callback">
+                (Optional) A function that is called if the method succeeds.
+            </param>
+            <param name="errorCallback">
+                (Optional) A function that is called if the method fails.
+                The reason for failure is passed as an argument.
+            </param>
+        </member>
         <member name="M:Openfin.Desktop.Window.flash(Openfin.Desktop.AckCallback,Openfin.Desktop.AckCallback)">
             <summary>
                 Draws attention to the window by flashing the taskbar and window caption.
@@ -1906,7 +2179,7 @@
         </member>
         <member name="M:Openfin.Desktop.Window.getSnapshot(Openfin.Desktop.AckCallback,Openfin.Desktop.AckCallback)">
             <summary>
-                Gets a base64 encoded PN snapshot of the window.
+                Gets a base64 encoded PNG snapshot of the window.
             </summary>
             <param name="callback">
                 (Optional) A function that is called if the method succeeds.
@@ -2089,10 +2362,18 @@
                     bounds-changed
                     bounds-changing
                     closed
+                    close-requested
+                    disabled-frame-bounds-changed
+                    disabled-frame-bounds-changing
                     focused
+                    frame-disabled
+                    frame-enabled
+                    group-changed
+                    hidden
                     maximized
                     minimized
                     restored
+                    shown
             </remarks>
             <param name="type">The type of the event.</param>
             <param name="listener">
@@ -2241,6 +2522,22 @@
                 The reason for failure is passed as an argument.
             </param>
         </member>
+        <member name="M:Openfin.Desktop.Window.setBounds(System.Int32,System.Int32,System.Int32,System.Int32,Openfin.Desktop.AckCallback,Openfin.Desktop.AckCallback)">
+            <summary>
+                Set's the bounds (top, left, width, height) of the window. 
+            </summary>
+            <param name="left">The left position of the window.</param>
+            <param name="top">The top position of the window.</param>
+            <param name="width">The width of the window.</param>
+            <param name="height">The height of the window.</param>
+            <param name="callback">
+                (Optional) A function that is called if the method succeeds.
+            </param>
+            <param name="errorCallback">
+                (Optional) A function that is called if the method fails.
+                The reason for failure is passed as an argument.
+            </param>
+        </member>
         <member name="M:Openfin.Desktop.Window.updateOptions(Openfin.Desktop.WindowOptions,Openfin.Desktop.AckCallback,Openfin.Desktop.AckCallback)">
             <summary>
                 Changes a window's options that were defined upon creation.
@@ -2253,6 +2550,84 @@
                 (Optional) A function that is called if the method fails.
                 The reason for failure is passed as an argument.
             </param>
+        </member>
+        <member name="T:Openfin.Desktop.Window.GroupChangedPayload">
+            <summary>
+                Helper struct representing the payload returned by the window event 'group-changed'
+            </summary>
+        </member>
+        <member name="F:Openfin.Desktop.Window.GroupChangedPayload.memberOf">
+            <summary>
+                Which group array the window that the event listener was 
+                registered on is included in.
+            </summary> 
+            <remarks>
+                'source'  The window is included in sourceGroup
+                'target'  The window is included in targetGroup
+                'nothing' The window is not included in sourceGroup nor targetGroup,
+            </remarks>
+        </member>
+        <member name="F:Openfin.Desktop.Window.GroupChangedPayload.name">
+            <summary>
+                The name of the window
+            </summary>
+        </member>
+        <member name="F:Openfin.Desktop.Window.GroupChangedPayload.reason">
+            <summary>
+                The reason this event was triggered.
+            </summary>
+            <remarks>
+                'leave'   A window has left the group due to a leave or merge with group.
+                'join'    A window has joined the group.
+                'merge'   Two groups have been merged together.
+                'disband' There are no other windows in the group
+            </remarks>
+        </member>
+        <member name="F:Openfin.Desktop.Window.GroupChangedPayload.sourceGroup">
+            <summary>
+                All the windows in the group the sourceWindow originated from
+            </summary>
+        </member>
+        <member name="F:Openfin.Desktop.Window.GroupChangedPayload.sourceWindowAppUuid">
+            <summary>
+                The UUID of the application the sourceWindow belongs to. 
+                The source window is the window in which (merge/join/leave)group(s) was called.
+            </summary>
+        </member>
+        <member name="F:Openfin.Desktop.Window.GroupChangedPayload.sourceWindowName">
+            <summary>
+                the name of the sourcewindow. The source window is 
+                the window in which (merge/join/leave)group(s) was called.
+            </summary>
+        </member>
+        <member name="F:Openfin.Desktop.Window.GroupChangedPayload.targetGroup">
+            <summary>
+                All the windows in the group the targetWindow orginated from.
+            </summary>
+        </member>
+        <member name="F:Openfin.Desktop.Window.GroupChangedPayload.targetWindowAppUuid">
+            <summary>
+                The UUID of the application the targetWindow belongs to. 
+                The target window is the window that was passed into (merge/join)group(s).
+            </summary>
+        </member>
+        <member name="F:Openfin.Desktop.Window.GroupChangedPayload.targetWindowName">
+            <summary>
+                The name of the targetWindow. 
+                The target window is the window that was passed into (merge/join)group(s)
+            </summary>
+        </member>
+        <member name="F:Openfin.Desktop.Window.GroupChangedPayload.uuid">
+            <summary>
+                The UUID of the application the window belongs to
+            </summary>
+        </member>
+        <member name="M:Openfin.Desktop.Window.GroupChangedPayload.#ctor(Openfin.Desktop.Ack,Openfin.Desktop.DesktopConnection)">
+            <summary>
+                Populates values from the ACK of a window 'group-changed' payload
+            </summary>
+            <param name="payload">The payload of a 'group-changed' event handler<see cref="T:Openfin.Desktop.Ack"/></param>
+            <param name="connection">Connection object to the AppDesktop.<see cref="T:Openfin.Desktop.DesktopConnection"/></param>
         </member>
         <member name="T:Openfin.Desktop.IAnimationTransition">
             <summary>
@@ -3110,6 +3485,19 @@
                 The reason for failure is passed as an argument.
             </param>
         </member>
+        <member name="M:Openfin.Desktop.DesktopSystem.setClipboard(System.String,Openfin.Desktop.AckCallback,Openfin.Desktop.AckCallback)">
+            <summary>
+                Copies text to the clipboard
+            </summary>
+            <param name="text">The text to copy</param>
+            <param name="callback">
+                (Optional) A function that is called if the method succeeds.
+            </param>
+            <param name="errorCallback">
+                (Optional) A function that is called if the method fails.
+                The reason for failure is passed as an argument.
+            </param>
+        </member>
         <member name="M:Openfin.Desktop.DesktopSystem.showDeveloperTools(System.String,System.String,Openfin.Desktop.AckCallback,Openfin.Desktop.AckCallback)">
             <summary>
                 Shows Developer tool
@@ -3137,13 +3525,14 @@
                 The reason for failure is passed as an argument.
             </param>
         </member>
-        <member name="M:Openfin.Desktop.DesktopSystem.terminateExternalProcess(System.String,System.UInt32,Openfin.Desktop.terminateExternalProcessHandler,Openfin.Desktop.AckCallback)">
+        <member name="M:Openfin.Desktop.DesktopSystem.terminateExternalProcess(System.String,System.UInt32,System.Boolean,Openfin.Desktop.terminateExternalProcessHandler,Openfin.Desktop.AckCallback)">
             <summary>
                 Attempts to cleanly close an external process and terminates it 
                 if the close has not occured after the elapsed timeout in milliseconds.
             </summary>
             <param name="processUuid">The UUID for a process launched by DesktopSystem.launchExternalProcess()</param>
             <param name="timeout">The time in milliseconds to wait for a close to occur before terminating.</param>
+            <param name="killTree">Explicitly terminates all child processes when true.</param>
             <param name="callback">
                 (Optional) A function that is called if the method succeeds. 
                 The result of the operation is returned as a TerminateExternalProcessResult
@@ -3277,6 +3666,18 @@
                 Ensures this window is deregistered on disposal.
             </summary>
         </member>
+        <member name="M:Openfin.Desktop.ExternalWindowObserver.onWindowFrameEnabled(Openfin.Desktop.Ack)">
+            <summary>
+                Triggered when a "frame-enabled" event is triggered for the registered external window.
+            </summary>
+            <param name="ack">Contains additional information provided by the AppDesktop</param>
+        </member>
+        <member name="M:Openfin.Desktop.ExternalWindowObserver.onWindowFrameDisabled(Openfin.Desktop.Ack)">
+            <summary>
+                Triggered when a "frame-disabled" event is triggered for the registered external window.
+            </summary>
+            <param name="ack">Contains additional information provided by the AppDesktop</param>
+        </member>
         <member name="M:Openfin.Desktop.ExternalWindowObserver.registerExternalWindow(Openfin.Desktop.AckCallback,Openfin.Desktop.AckCallback)">
             <summary>
                 Notifies the desktop to track, control and observe events for this window.
@@ -3311,6 +3712,20 @@
             <summary>
                 Install delegates to send WM events to the desktop 
             </summary>
+        </member>
+        <member name="M:Openfin.Desktop.ExternalWindowObserver.onCaptureChanged(System.IntPtr,System.UInt32,System.UInt32,System.Int32,System.Boolean@)">
+            <summary>
+                Called in response to WM_CAPTURECHANGED .
+            </summary>
+            <param name="hwnd">A handle to the window.</param>
+            <param name="msg">WM_CAPTURECHANGED</param>
+            <param name="wParam">
+                This parameter is not used.
+            </param>
+            <param name="lParam">
+                A handle to the window gaining the mouse capture.
+            </param>
+            <param name="handled">Will bypass the default WndProc when set to true.</param>
         </member>
         <member name="M:Openfin.Desktop.ExternalWindowObserver.onDestroyed(System.IntPtr,System.UInt32,System.UInt32,System.Int32,System.Boolean@)">
             <summary>
@@ -3410,6 +3825,16 @@
                 A handle to the window that has lost the keyboard focus. 
                 This parameter can be NULL.
             </param>
+            <param name="lParam">This parameter is not used.</param>
+            <param name="handled">Will bypass the default WndProc when set to true.</param>
+        </member>
+        <member name="M:Openfin.Desktop.ExternalWindowObserver.onSizing(System.IntPtr,System.UInt32,System.UInt32,System.Int32,System.Boolean@)">
+            <summary>
+                Called in response to WM_SIZING.
+            </summary>
+            <param name="hwnd">A handle to the window.</param>
+            <param name="msg">WM_SIZING</param>
+            <param name="wParam">This parameter is not used.</param>
             <param name="lParam">This parameter is not used.</param>
             <param name="handled">Will bypass the default WndProc when set to true.</param>
         </member>

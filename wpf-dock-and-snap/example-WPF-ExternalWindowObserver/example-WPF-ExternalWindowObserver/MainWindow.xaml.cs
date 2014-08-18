@@ -44,6 +44,8 @@ namespace example_WPF_ExternalWindowObserver_snap
         // Summary:
         //     Callback when the connection with the Desktop has closed.
         public void onClosed() {
+            this.connection_.disconnect();
+
             // Handle on UI thread
             this.Dispatcher.BeginInvoke(new Action(() =>
             {

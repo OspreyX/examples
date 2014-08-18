@@ -40,7 +40,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="OpenfinDesktop">
+    <Reference Include="OpenfinDesktop, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\OpenfinDesktop.dll</HintPath>
     </Reference>
     <Reference Include="System" />

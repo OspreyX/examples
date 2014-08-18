@@ -1,0 +1,25 @@
+{
+  "env": "2.0.7.0",
+  "desktop_core_url": "https://demoappdirectory.openf.in/desktop/desktopcore/2.0.7/index.html",
+  "desktop_controller_url": "https://demoappdirectory.openf.in/desktop/desktopcontroller/2.0.7/index.html",
+  "devtools_port" : 9090,
+  "startup_app": {
+    "name": "WPF-Snap-HTML",
+    "url": "https://developer.openfin.co/examples/external-wpf-window-dock-and-snap/index.html",
+    "uuid": "WPF-Snap-HTML",
+    "applicationIcon": "https://developer.openfin.co/examples/external-wpf-window-dock-and-snap/openfin.ico",
+    "autoShow": true,
+    "defaultWidth": 310,
+    "defaultHeight": 287
+  },
+  "runtime": {
+    "arguments": "",
+    "version": "latest"
+  },
+  "shortcut": {
+    "company": "OpenFin",
+    "description": "WPF-Snap-HTML",
+    "icon": "https://developer.openfin.co/examples/external-wpf-window-dock-and-snap/openfin.ico",
+    "name": "WPF-Snap-HTML"
+  }
+}
