@@ -17,17 +17,19 @@ namespace example_WPF_ExternalWindowObserver_snap
         {
             string host = "localhost";
             int port = 9696;
+            string runtimeVersion = "3.0.0.0";
+            //string runtimeVersion = "2.0.7.0";
 
-            // Get default installed location for runtime 2.0.7.0
+            // Get default installed location for runtime
             string path = (Environment.OSVersion.Version.Major > 5? 
                 // Vista, Win7 or Win8
-                Environment.ExpandEnvironmentVariables("%LOCALAPPDATA%") + "\\OpenFin\\runtime\\2.0.7.0\\OpenFin\\openfin.exe"
+                Environment.ExpandEnvironmentVariables("%LOCALAPPDATA%") + "\\OpenFin\\runtime\\" + runtimeVersion + "\\OpenFin\\openfin.exe"
                     :
                 // XP
-                Environment.ExpandEnvironmentVariables("%APPDATA%") + "..\\Local Settings\\Application Data\\OpenFin\\runtime\\2.0.7.0\\OpenFin\\openfin.exe"
+                Environment.ExpandEnvironmentVariables("%APPDATA%") + "..\\Local Settings\\Application Data\\OpenFin\\runtime\\" + runtimeVersion + "\\OpenFin\\openfin.exe"
             );
 
-            string args = "";
+            string args = "--config=\"https://developer.openfin.co/examples/external-wpf-window-dock-and-snap/app.json\"";
             string connectionName = "WPF-Snap-Controller";
             string parentAppUuid = "WPF-Snap-HTML";
             string name = "externalWPF";
